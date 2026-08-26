@@ -7,26 +7,6 @@ does zero perception** — it only streams the D435i + wheel odometry over Ether
 Laptop stack: **Isaac ROS Visual SLAM (cuVSLAM) → Isaac ROS Nvblox (ESDF) →
 Nav2**, with robot_localization, RViz2, CycloneDDS.
 
----
-
-## ⚠️ Current machine state (read before running) — found 2026-06-22
-Three things block a blind run of the original plan; the scripts handle/guard them:
-
-1. **`/DataDrive` target is NTFS.** `/media/salman/DataDrive1` (`nvme0n1p7`) is an
-   NTFS/FUSE Windows partition. Docker overlay2 + colcon **cannot** run there.
-   `/DataDrive` does not exist yet. → Provision an **ext4** mount with
-   `scripts/provision_datadrive.sh` (reformat that partition, add an external
-   SSD, or carve a new partition). Every storage-touching script refuses NTFS.
-2. **Root `/` is small (64 GB).** Fine for Docker + ROS packages once ~5 GB+ is
-   free (`scripts/free_root_space.sh`), but the full Isaac ROS image stack
-   (~60 GB) must live on the ext4 DataDrive, not root.
-3. **VPN + Ethernet.** ExpressVPN (`tun0`) captures the default route → it
-   **breaks DDS discovery** to the Pi; disconnect it for robot work. Wired
-   `eno1` was DOWN; `configure_network.sh --setup-eth` brings it up.
-
-`nvcc` not being on the host is **fine** — Isaac ROS uses CUDA inside Docker.
-
----
 
 ## Layout
 ```
