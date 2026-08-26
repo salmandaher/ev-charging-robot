@@ -1,0 +1,52 @@
+# =============================================================================
+#  nvblox.yaml  (STEP 11)  --  parameters for nvblox_ros NvbloxNode
+#  Tuned for a single D435i on a differential-drive ground robot.
+# =============================================================================
+/**:
+  ros__parameters:
+    # ---- frames / pose source ----
+    global_frame: odom            # reconstruction frame; cuVSLAM keeps map->odom corrected
+    # pose comes from TF (camera optical frame -> global_frame)
+    use_tf_transforms: true
+
+    # ---- inputs ----
+    num_cameras: 1
+    use_depth: true
+    use_color: true
+    use_lidar: false
+    depth_qos: SENSOR_DATA
+    color_qos: SENSOR_DATA
+
+    # ---- reconstruction resolution / range ----
+    voxel_size: 0.05              # 5 cm voxels (good speed/quality for nav)
+    max_depth: 4.0               # D435i reliable range (m)
+    min_depth: 0.3
+    max_integration_distance_m: 4.0
+
+    # ---- mapping behaviour ----
+    mapping_type: static_tsdf     # static environment; use 'dynamic' for moving obstacles
+    projective_integrator_max_integration_distance_m: 4.0
+    integrator_max_integration_distance_m: 4.0
+
+    # ---- ESDF (drives the Nav2 costmap) ----
+    esdf: true
+    esdf_2d: true                 # 2D slice for ground navigation
+    publish_esdf_distance_slice: true
+    esdf_slice_height: 0.30       # height of the slice above the floor (m)
+    esdf_2d_min_height: 0.10
+    esdf_2d_max_height: 0.60
+    esdf_update_rate_hz: 10.0
+
+    # ---- mesh (for RViz visualization) ----
+    mesh: true
+    mesh_update_rate_hz: 5.0
+
+    # ---- map maintenance ----
+    map_clearing_radius_m: 8.0    # forget geometry beyond this radius from the robot
+    map_clearing_frame_id: base_link
+    clear_outside_radius_rate_hz: 1.0
+
+    # ---- performance ----
+    tick_period_ms: 10
+    print_timings_to_console: false
+    maximum_sensor_message_queue_length: 30
